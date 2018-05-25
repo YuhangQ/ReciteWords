@@ -1,0 +1,24 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>页面跳转中..</title>
+</head>
+
+<body>
+    <script type="text/javascript"> 
+        var t = 1;
+        setInterval("refer()", 1000);
+        function refer() {
+            if (t == 0) {
+                location = '<%= target %>'; //#设定跳转的链接地址 
+            }
+            document.getElementById('show').innerHTML = t + " 秒"; // 显示倒计时 
+            t--;
+        }
+    </script>
+    <span><%= message %></span><br />
+    <span id="show">2 秒</span>
+</body>
+
+</html>

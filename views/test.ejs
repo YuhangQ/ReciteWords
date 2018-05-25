@@ -1,0 +1,39 @@
+<% include include/header.ejs %>
+
+<form method="post" action="/test">
+    <div class="container text-center" style="padding-top: 10%">
+
+        <h3><%= meaning %></h3>
+        
+        <div class="row">
+            <div class="input-group offset-md-3 col-md-5">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">剩余:<%= tot %></span>
+                </div>
+                <input type="text" class="form-control " autofocus="autofocus" autocomplete="off" placeholder="请输入正确的单词." name="ans">
+            </div>
+            <button type="submit" class="btn btn-primary col-md-1">确定</button>
+        </div>
+
+        <h3>&nbsp;</h3>
+
+        <% if(success.length > 0){ %>
+            <div class="row">
+                <div class="offset-md-3 col-md-6 alert alert-success">
+                    <%= success %>
+                </div>
+            </div>
+        <% } %>
+        
+        <% if(error.length > 0){ %>
+            <div class="row">
+                <div class="offset-md-3 col-md-6 alert alert-danger">
+                    <%= error %>
+                </div>
+            </div>
+        <% } %>
+
+    </div>
+</form>
+
+<% include include/footer.ejs %>

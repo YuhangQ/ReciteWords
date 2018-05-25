@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<% include ./../include/header.ejs %>
+
+    <form method="post" action="/user/registe">
+        <div class="container" style="padding-top: 10%">
+            <div class="offset-md-3 col-md-6">
+                <h3>注册一个账号，开启美好生活。</h3>
+                <% if(hasError){ %>
+                    <div class="alert alert-danger">
+                        <%= message %>
+                    </div>
+                <% } %>
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" class="form-control" name="username" placeholder="输入用户名.">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" class="form-control" name="password" placeholder="请输入密码.">
+                </div>
+                <button type="submit" class="btn btn-primary col-md-12">注册</button>
+            </div>
+        </div>
+    </form>
+
+<% include ./../include/footer.ejs %>

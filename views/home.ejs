@@ -1,0 +1,25 @@
+<% include include/header.ejs %>
+
+<form method="get" action="/test">
+    <div class="container text-center" style="padding-top: 10%">
+        <h2>请选择你要测试的单元</h2> <br />
+        <% if(success.length > 0){ %>
+            <div class="row">
+                <div class="offset-md-3 col-md-6 alert alert-success">
+                    <%= success %>
+                </div>
+            </div>
+        <% } %>
+        <div class="row">
+            <select class="form-control offset-md-3 col-md-5" name="unit">
+                <% for(let v in data) { %>
+                <option><%= v %></option>
+                <% } %>
+            </select>
+            <h5>&nbsp;</h5>
+            <button type="submit" class="btn btn-outline-primary col-md-1">开始</button>
+        </div>
+    </div>
+</form>
+
+<% include include/footer.ejs %>
