@@ -12,10 +12,9 @@ router.get('/info', (req, res) => {
         if(err || !user) res.send('不存在的用户，或系统错误。');
         else {
             res.render('user/info', {
+                queryuser: req.query.user,
                 user: req.user,
                 passed: user.passed,
-                error: req.flash('error'),
-                success: req.flash('success')
             });
         }
     })
@@ -53,6 +52,19 @@ router.get('/registe', (req, res) => {
         hasError: message.length > 0
     });
 });
+
+router.get('/password', (req, res) => {
+    if(!req.isAuthenticated()) {
+        res.redirect('/');
+        return;
+    }
+    res.render('user/password', {
+        user: req.user,
+        error: req.flash('error'),
+        success: req.flash('success')
+    });
+});
+
 
 function encrypt(password) {
     for(let i=1; i<=500; i++) {
@@ -107,27 +119,26 @@ router.post('/changepassword', (req, res) => {
     }
     if(req.body.new1 != req.body.new2) {
         req.flash('error', '两次的新密码输入不一致。');
-        res.redirect('/user/info?user=' + req.user.username);
-        console.log('/user/info?user=' + req.user.username);
+        res.redirect('/user/password');
         return;
     }
     let oldPass = req.body.old;
     let newPass = req.body.new1;
     if(newPass.length < 4) {
         req.flash('error', "密码过短(大于4字符)。");
-        res.redirect('/user/info?user=' + req.user.username);
+        res.redirect('/user/password');
         return;
     }
     Account.findOne({username: req.user.username}, (err, query) => {
         if(encrypt(oldPass) != query.password) {
             req.flash('error', '原密码输入错误。');
-            res.redirect('/user/info?user=' + req.user.username);
+            res.redirect('/user/password');
             return;
         }
         query.password = encrypt(newPass);
         query.save();
         req.flash('success', '改密码成功。');
-        res.redirect('/user/info?user=' + req.user.username);
+        res.redirect('/user/password');
     });
 })
 

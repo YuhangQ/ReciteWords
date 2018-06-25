@@ -9,9 +9,29 @@ router.get('/', (req, res) => {
         res.redirect('/user/login');
         return;
     }
-    if (req.query.unit) {
+    if(req.query.unit) {
         if (!datas[req.query.unit]) res.redirect('/');
-        req.session.queue = datas[req.query.unit];
+        let queue = [];
+        if(req.query.ignore == "ok") {
+            for(let i=0; i<datas[req.query.unit].length; i++) {
+                if(datas[req.query.unit][i].Chinese.indexOf("△") != -1) continue;
+                queue.push(datas[req.query.unit][i]);
+            }
+        } else {
+            for(let i=0; i<datas[req.query.unit].length; i++) {
+                queue.push(datas[req.query.unit][i]);
+            }
+        }
+        if(req.query.random == "ok") {
+            for(let i=0; i<100000; i++) {
+                let x = Math.floor(Math.random() * 10000) % queue.length;
+                let y = Math.floor(Math.random() * 10000) % queue.length;
+                let t = queue[x];
+                queue[x] = queue[y];
+                queue[y] = t;
+            }
+        }
+        req.session.queue = queue;
         req.session.unit = req.query.unit;
         res.redirect('/test');
     } else {
