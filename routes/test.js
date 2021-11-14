@@ -60,7 +60,7 @@ router.post('/', (req, res) => {
         req.flash('error', `回答错误：${queue[0].Chinese} 正确: ${queue[0].English} 你的: ${ans} 将在最后重考！`);
         req.session.queue = queue.slice(1);
         req.session.queue.push(queue[0]);
-        res.redirect('http:/test');
+        res.redirect('/test');
         return;
     }
     req.session.queue = queue.slice(1);
@@ -86,11 +86,11 @@ router.post('/', (req, res) => {
         })
 
         req.flash('success', '你已经完成了测试。');
-        res.redirect('http:/');
+        res.redirect('/');
         return;
     }
     req.flash('success', `${queue[0].Chinese} - ${queue[0].English} 答案正确，请继续下一题。`);
-    res.redirect('http:/test');
+    res.redirect('/test');
 
 });
 
