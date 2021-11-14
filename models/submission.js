@@ -1,8 +1,6 @@
-const mongoose = require('mongoose');
+const invodb = require("invodb");
 
-const Submission = new mongoose.Schema({
-    username: String,
-    unit: String
-}, { timestamps: true });
+let sub = invodb.collection("submission");
+if(!sub.exist()) sub.create();
 
-module.exports = mongoose.model("submissions", Submission);
+module.exports = sub;

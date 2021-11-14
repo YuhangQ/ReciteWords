@@ -8,16 +8,16 @@ const config  = require('./../config/config');
 const crypto = require('crypto');
 
 router.get('/info', (req, res) => {
-    let user = Account.findOne({ username: req.query.user }, (err, user) => {
-        if(err || !user) res.send('不存在的用户，或系统错误。');
-        else {
-            res.render('user/info', {
-                queryuser: req.query.user,
-                user: req.user,
-                passed: user.passed,
-            });
-        }
-    })
+    let user = Account.findOne({ username: req.query.user });
+    if(!user) res.send('不存在的用户，或系统错误。');
+    else {
+        res.render('user/info', {
+            queryuser: req.query.user,
+            user: req.user,
+            passed: user.passed,
+        }); 
+    }
+    
 });
 
 router.get('/login', (req, res) => {
@@ -95,21 +95,20 @@ router.post('/registe', (req, res) => {
         res.redirect('/user/registe');
         return;
     }
-    Account.findOne({ username: username }, (err, user) => {
-        if(user) {
-            req.flash('error', "用户已经存在。");
-            res.redirect('/user/registe');
-        } else {
-            let account = new Account({
-                username: username,
-                password: encrypt(password)
-            })
-            account.save().then(() => {
-                req.flash('success', '注册成功，请开始登录吧！');
-                res.redirect('/user/login');
-            });
-        }
-    });
+    let user = Account.findOne({ username: username });
+    console.log(user)
+    if(user) {
+        req.flash('error', "用户已经存在。");
+        res.redirect('/user/registe');
+    } else {
+        Account.insert({
+            username: username,
+            password: encrypt(password),
+            passed: []
+        })
+        req.flash('success', '注册成功，请开始登录吧！');
+        res.redirect('/user/login');
+    }
 });
 
 router.post('/changepassword', (req, res) => {
@@ -129,17 +128,16 @@ router.post('/changepassword', (req, res) => {
         res.redirect('/user/password');
         return;
     }
-    Account.findOne({username: req.user.username}, (err, query) => {
-        if(encrypt(oldPass) != query.password) {
-            req.flash('error', '原密码输入错误。');
-            res.redirect('/user/password');
-            return;
-        }
-        query.password = encrypt(newPass);
-        query.save();
-        req.flash('success', '改密码成功。');
+    let user = Account.findOne({username: req.user.username});
+    if(encrypt(oldPass) != user.password) {
+        req.flash('error', '原密码输入错误。');
         res.redirect('/user/password');
-    });
+        return;
+    }
+    user.password = encrypt(newPass);
+    Account.insert(user);
+    req.flash('success', '改密码成功。');
+    res.redirect('/user/password');
 })
 
 router.use('/logout', (req, res) => {

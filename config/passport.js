@@ -5,13 +5,12 @@ const config = require('./config');
 const crypto = require('crypto');
 
 module.exports.serializeUser = function (user, done) {
-    done(null, user.id);
+    done(null, user.__INVO_ID__);
 };
 
 module.exports.deserializeUser = function (id, done) {
-    Account.findById(id, function (err, user) {
-        done(err, user);
-    });
+    let user = Account.findOne({__INVO_ID__: id});
+    done(null, user);
 };
 
 function encrypt(password) {
@@ -25,13 +24,11 @@ function encrypt(password) {
 
 module.exports.LocalStrategy = new LocalStrategy(
     function (username, password, done) {
-        Account.findOne({ username: username }, function (err, user) {
-            if (err) {return done(err);}
-            if (!user) {return done(null, false, { message: "用户名或密码错误"});}
-            if (user.password != encrypt(password)) {
-                return done(null, false, { message: "用户名或密码错误" });
-            }
-            return done(null, user);
-        });
+        let user = Account.findOne({ username: username });
+        if (!user) {return done(null, false, { message: "用户名或密码错误"});}
+        if (user.password != encrypt(password)) {
+            return done(null, false, { message: "用户名或密码错误" });
+        }
+        return done(null, user);
     }
 );

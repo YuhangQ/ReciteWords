@@ -1,3 +1,5 @@
+require('invodb').database("recitewords.invodb");
+
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -8,7 +10,6 @@ const flash = require('express-flash');
 const mongoose = require('mongoose');
 const Account = require('./models/account');
 const config = require('./config/config');
-
 const app = express();
 
 
@@ -24,15 +25,6 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: config.SESSION_SECRET, resave: true, saveUninitialized: true }));
 app.use(flash());
-
-// 加载数据库
-
-mongoose.connect(config.MONGODB_URI).then(() => {
-    console.log("数据库连接成功！")
-}).catch(err => {
-    console.log("无法连接到 Mongodb, 请检查 MONGODB_URI.");
-    process.exit(0);
-});
 
 // 加载 passport 登录认证模块
 app.use(passport.initialize());
@@ -53,5 +45,6 @@ app.use('/user', userRouter);
 app.use('/test', testRouter);
 app.use('/submissions', submitRouter);
 
+console.log("Listening on 8080...")
 app.listen(8080);
 

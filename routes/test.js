@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const datas = require('./../config/testdata');
 const Submission = require('./../models/submission');
+const Account = require('./../models/account');
 
 router.get('/', (req, res) => {
     if(!req.user) {
@@ -75,14 +76,14 @@ router.post('/', (req, res) => {
         if (!contains) {
             req.user.passed.push(req.session.unit);
             req.user.passed.sort();
-            req.user.save();
+            Account.insert(req.user);
         }
 
-        let sub = new Submission({
+        Submission.insert({
             username: req.user.username,
-            unit: req.session.unit
-        });
-        sub.save();
+            unit: req.session.unit,
+            time: new Date().getTime()
+        })
 
         req.flash('success', '你已经完成了测试。');
         res.redirect('http:/');

@@ -1,10 +1,6 @@
-const passport = require('passport');
-const mongoose = require('mongoose');
+const invodb = require("invodb");
 
-const Account = new mongoose.Schema({
-    username: String,
-    password: String,
-    passed: Array
-}, { timestamps: true });
+let acc = invodb.collection("account");
+if(!acc.exist()) acc.create();
 
-module.exports = mongoose.model("accounts", Account);
+module.exports = acc;
